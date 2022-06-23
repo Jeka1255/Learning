@@ -1,0 +1,45 @@
+image: cr.yandex/crp742p3qacifd2hcon2/practice-da:latest
+
+stages:
+    - init
+    - run
+
+test_report_job:
+    stage: run
+    script:
+        - python telegram_send_2.py
+    only:
+        refs:
+            - schedules
+        variables:
+            - $SCHEDULE_TYPE == "RUN_FEED"
+        
+app_job:
+    stage: run
+    script:
+        - python report_send.py
+    only:
+        refs:
+            - schedules
+        variables:
+            - $SCHEDULE_TYPE == "RUN_APP"
+
+alert_job:
+    stage: run
+    script:
+        - python  5.alert_stat.py
+    only:
+        refs:
+            - schedules
+        variables:
+            - $SCHEDULE_TYPE == "RUN_ALERT"
+
+alert_job_stat:
+    stage: run
+    script:
+        - python  5.alert_stat_2.py
+    only:
+        refs:
+            - schedules
+        variables:
+            - $SCHEDULE_TYPE == "RUN_ALERT"
